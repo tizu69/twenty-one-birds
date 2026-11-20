@@ -9,6 +9,8 @@ import (
 	"image/png"
 	"math/rand"
 	"os"
+
+	"github.com/dolmen-go/kittyimg"
 )
 
 //go:embed birds/*.png
@@ -19,6 +21,7 @@ var (
 	height  = flag.Int("height", 1080, "height of the image")
 	density = flag.Int("density", 100, "density of the birds")
 	output  = flag.String("output", "image.png", "output file name")
+	display = flag.Bool("display", false, "display the image using kitty image protocol after generation")
 )
 
 func main() {
@@ -53,7 +56,12 @@ func main() {
 	if err := os.WriteFile(*output, buf.Bytes(), 0o644); err != nil {
 		panic(err)
 	}
-	println("ok!")
+
+	if *display {
+		kittyimg.Fprintln(os.Stdout, img)
+	} else {
+		println("done!")
+	}
 }
 
 func randomBird() image.Image {
